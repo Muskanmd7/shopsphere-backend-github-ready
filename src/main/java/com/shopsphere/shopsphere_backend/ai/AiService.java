@@ -91,6 +91,7 @@ public class AiService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("x-goog-api-key", apiKey);
 
         Map<String, Object> part = new HashMap<>();
         part.put("text", prompt);
@@ -104,13 +105,24 @@ public class AiService {
         HttpEntity<Map<String, Object>> request =
                 new HttpEntity<>(body, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange(
-                apiUrl + "?key=" + apiKey,
-                HttpMethod.POST,
-                request,
-                String.class
-        );
+        try {
 
-        return response.getBody();
+            ResponseEntity<String> response = restTemplate.exchange(
+                    apiUrl,
+                    HttpMethod.POST,
+                    request,
+                    String.class
+            );
+
+            return response.getBody();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            throw new RuntimeException(
+                    "Gemini API call failed: " + e.getMessage(), e
+            );
+        }
     }
 }

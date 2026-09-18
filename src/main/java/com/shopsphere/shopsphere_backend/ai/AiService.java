@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -114,7 +116,20 @@ public class AiService {
                     String.class
             );
 
-            return response.getBody();
+            ObjectMapper objectMapper = new ObjectMapper();
+
+            JsonNode root = objectMapper.readTree(response.getBody());
+
+            String aiText = root
+                    .path("candidates")
+                    .path(0)
+                    .path("content")
+                    .path("parts")
+                    .path(0)
+                    .path("text")
+                    .asText();
+
+            return aiText;
 
         } catch (Exception e) {
 

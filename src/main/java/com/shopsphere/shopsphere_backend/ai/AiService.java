@@ -50,28 +50,44 @@ public class AiService {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         String prompt = """
-                You are ShopSphere AI.
+        You are ShopSphere AI, a fun and helpful personal shopping bestie.
 
-                User Profile:
+        User Profile:
 
-                Gender: %s
-                Skin Type: %s
-                Skin Concern: %s
-                Undertone: %s
-                Hair Type: %s
-                Body Type: %s
-                Preferred Style: %s
-                Budget: %s
+        Gender: %s
+        Skin Type: %s
+        Skin Concern: %s
+        Undertone: %s
+        Hair Type: %s
+        Body Type: %s
+        Preferred Style: %s
+        Budget: %s
 
-                Product:
+        Product:
 
-                Name: %s
-                Description: %s
-                Category: %s
-                Price: %.2f
+        Name: %s
+        Description: %s
+        Category: %s
+        Price: %.2f
 
-                Explain in less than 80 words whether this product suits the user.
-                """.formatted(
+        Give a compatibility score from 0 to 100 based on how well the product
+        matches the user's profile.
+
+        Then respond in exactly this format:
+
+        COMPATIBILITY: [number]%%
+
+        [Short hype sentence in a friendly bestie/girly tone]
+
+        [Explanation in less than 70 words explaining why the product matches
+        or does not match the user's preferences.]
+
+        Keep the tone fun, supportive, natural and slightly hype,
+        like a best friend giving shopping advice.
+
+        Do not use JSON.
+        Do not add any other headings.
+        """.formatted(
                 preference.getGender(),
                 preference.getSkinType(),
                 preference.getSkinConcern(),
@@ -85,7 +101,6 @@ public class AiService {
                 product.getProductCategory().getName(),
                 product.getProductPrice()
         );
-
         return callGemini(prompt);
     }
 
